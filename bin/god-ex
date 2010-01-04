@@ -2,12 +2,6 @@
 
 $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 
-#load "/usr/bin/god"
-
-#$LOAD_PATH << "lib"
-#$LOAD_PATH << "~/src/god/god/lib"
-#$LOAD_PATH << "~/src/god/god/"
-
 require 'rubygems'
 
 version = ">= 0"
@@ -16,6 +10,12 @@ if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
   version = $1
   ARGV.shift
 end
+
+require 'god'
+require 'god/conditions/group_memory_usage'
+require 'god/conditions/group_cpu_usage'
+require 'god/system/extended_process'
+require 'god/system/slash_proc_extended_poller'
 
 gem 'god', version
 load Gem.bin_path('god', 'god', version)

@@ -12,6 +12,7 @@ if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
 end
 
 require 'god'
+require 'god/conditions/swap_usage'
 require 'god/conditions/group_memory_usage'
 require 'god/conditions/group_cpu_usage'
 require 'god/system'

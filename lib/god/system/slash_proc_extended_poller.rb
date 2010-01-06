@@ -5,11 +5,13 @@ module God
       @@kb_per_page = 4 # TODO: Need to make this portable
       @@hertz = 100
       @@total_mem = nil
+      @@num_of_cpu = nil
 
       @@processes = nil
       @@processes_fetch = 0
       
       MeminfoPath = '/proc/meminfo'
+      CpuinfoPath = '/proc/cpuinfo'
       UptimePath = '/proc/uptime'
       
       RequiredPaths = [MeminfoPath, UptimePath]
@@ -31,6 +33,10 @@ module God
             @@total_mem = f.gets.split[1]
           end
         end
+
+        unless @@num_of_cpu
+          @@num_of_cpu = File.read(CpuinfoPath).lines.grep(/^processor/).size
+        end
       end
       
       def memory
@@ -44,7 +50,7 @@ module God
       rescue # This shouldn't fail is there's an error (or proc doesn't exist)
         0
       end
-      
+
       # TODO: Change this to calculate the wma instead
       def percent_cpu
         stats = stat
@@ -91,7 +97,11 @@ module God
             cpu += ((total_time * 1000 / @@hertz) / seconds) / 10
           end
         end
-        cpu
+        if @@num_of_cpu
+          return cpu / @@num_of_cpu
+        else
+          return cpu
+        end
       end
       
       private

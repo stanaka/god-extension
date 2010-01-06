@@ -72,11 +72,11 @@ module God
         mem = 0
         pg = processgroup
         pg.each do |process|
-          mem += process[:smaps][:Private_Dirty]
-          mem += process[:smaps][:Private_Clean]
+          mem += process[:smaps][:Private_Dirty] || 0
+          mem += process[:smaps][:Private_Clean] || 0
         end
-        mem += pg[0][:smaps][:Shared_Dirty]
-        mem += pg[0][:smaps][:Shared_Clean]
+        mem += pg[0][:smaps][:Shared_Dirty] || 0
+        mem += pg[0][:smaps][:Shared_Clean] || 0
         mem
       end
       

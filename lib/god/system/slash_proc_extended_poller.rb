@@ -35,7 +35,7 @@ module God
         end
 
         unless @@num_of_cpu
-          @@num_of_cpu = File.read(CpuinfoPath).lines.grep(/^processor/).size
+          @@num_of_cpu = File.read(CpuinfoPath).split(/\n/).grep(/^processor/).size
         end
       end
       

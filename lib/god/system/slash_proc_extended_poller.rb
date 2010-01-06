@@ -112,7 +112,7 @@ module God
         stats[:policy] = File.read("/proc/#{pid}/stat").split
         return stats
       rescue => e
-        p e
+        p 'Error:' + e.to_s + " at " + e.backtrace
         {}
       end
 
@@ -152,7 +152,7 @@ module God
         end
         return block
       rescue => e
-        p e
+        p 'Error:' + e.to_s + " at " + e.backtrace
         {}
       end
 

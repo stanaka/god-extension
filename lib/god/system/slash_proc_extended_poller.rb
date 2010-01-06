@@ -4,39 +4,15 @@ module God
     class SlashProcExtendedPoller < PortablePoller
       @@kb_per_page = 4 # TODO: Need to make this portable
       @@hertz = 100
-      @@total_mem = nil
-      @@num_of_cpu = nil
 
       @@processes = nil
       @@processes_fetch = 0
-      
-      MeminfoPath = '/proc/meminfo'
-      CpuinfoPath = '/proc/cpuinfo'
-      UptimePath = '/proc/uptime'
-      
-      RequiredPaths = [MeminfoPath, UptimePath]
       
       # FreeBSD has /proc by default, but nothing mounted there!
       # So we should check for the actual required paths!
       # Returns true if +RequiredPaths+ are readable.
       def self.usable?
-        RequiredPaths.all? do |path|
-          test(?r, path) && readable?(path)
-        end
-      end
-      
-      def initialize(pid)
-        super(pid)
-        
-        unless @@total_mem # in K
-          File.open(MeminfoPath) do |f|
-            @@total_mem = f.gets.split[1]
-          end
-        end
-
-        unless @@num_of_cpu
-          @@num_of_cpu = File.read(CpuinfoPath).split(/\n/).grep(/^processor/).size
-        end
+        God::System.usable?
       end
       
       def memory
@@ -46,7 +22,7 @@ module God
       end
       
       def percent_memory
-        (memory / @@total_mem.to_f) * 100
+        (memory / God::System.total_mem.to_f) * 100
       rescue # This shouldn't fail is there's an error (or proc doesn't exist)
         0
       end
@@ -97,8 +73,8 @@ module God
             cpu += ((total_time * 1000 / @@hertz) / seconds) / 10
           end
         end
-        if @@num_of_cpu
-          return cpu / @@num_of_cpu
+        if God::System.num_of_cpu > 1
+          return cpu / God::System.num_of_cpu
         else
           return cpu
         end

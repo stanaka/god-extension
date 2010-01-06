@@ -14,6 +14,7 @@ end
 require 'god'
 require 'god/conditions/group_memory_usage'
 require 'god/conditions/group_cpu_usage'
+require 'god/system'
 require 'god/system/extended_process'
 require 'god/system/slash_proc_extended_poller'
 

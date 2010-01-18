@@ -52,10 +52,10 @@ module God
         history = "[" + @timeline.map { |x| "#{x > self.above ? '*' : ''}#{x}kb" }.join(", ") + "]"
         
         if @timeline.select { |x| x > self.above }.size >= self.times.first
-          self.info = "swap memory out of bounds #{history}"
+          self.info = "load average out of bounds #{history}"
           return true
         else
-          self.info = "swap memory within bounds #{history}"
+          self.info = "load average within bounds #{history}"
           return false
         end
       end

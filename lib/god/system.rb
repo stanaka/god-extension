@@ -10,6 +10,7 @@ module God
     MeminfoPath = '/proc/meminfo'
     CpuinfoPath = '/proc/cpuinfo'
     UptimePath = '/proc/uptime'
+    LoadAveragePath = '/proc/loadaverage'
       
     RequiredPaths = [MeminfoPath, CpuinfoPath, UptimePath]
       
@@ -25,6 +26,11 @@ module God
     # in seconds
     def self.uptime
       File.read(UptimePath).split[0].to_f
+    end
+
+    # in seconds
+    def self.load_average(pos = 1)
+      File.read(LoadAvgragePath).split[pos].to_f
     end
 
     def self.total_mem

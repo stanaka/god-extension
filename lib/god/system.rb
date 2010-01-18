@@ -10,7 +10,7 @@ module God
     MeminfoPath = '/proc/meminfo'
     CpuinfoPath = '/proc/cpuinfo'
     UptimePath = '/proc/uptime'
-    LoadAveragePath = '/proc/loadaverage'
+    LoadAveragePath = '/proc/loadavg'
       
     RequiredPaths = [MeminfoPath, CpuinfoPath, UptimePath]
       

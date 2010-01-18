@@ -30,7 +30,7 @@ module God
 
     # in seconds
     def self.load_average(pos = 1)
-      File.read(LoadAvgragePath).split[pos].to_f
+      File.read(LoadAveragePath).split[pos].to_f
     end
 
     def self.total_mem

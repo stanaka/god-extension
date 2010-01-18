@@ -49,7 +49,7 @@ module God
       def test
         @timeline.push(God::System.load_average)
         
-        history = "[" + @timeline.map { |x| "#{x > self.above ? '*' : ''}#{x}kb" }.join(", ") + "]"
+        history = "[" + @timeline.map { |x| "#{x > self.above ? '*' : ''}#{x}" }.join(", ") + "]"
         
         if @timeline.select { |x| x > self.above }.size >= self.times.first
           self.info = "load average out of bounds #{history}"

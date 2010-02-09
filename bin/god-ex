@@ -19,6 +19,7 @@ require 'god/conditions/load_average'
 require 'god/system'
 require 'god/system/extended_process'
 require 'god/system/slash_proc_extended_poller'
+require 'god/contacts/irc'
 
 gem 'god', version
 load Gem.bin_path('god', 'god', version)

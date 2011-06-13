@@ -7,20 +7,20 @@ module God
 
       @@processes = nil
       @@processes_fetch = 0
-      
+
       # FreeBSD has /proc by default, but nothing mounted there!
       # So we should check for the actual required paths!
       # Returns true if +RequiredPaths+ are readable.
       def self.usable?
         God::System.usable?
       end
-      
+
       def memory
         stat[:rss].to_i * @@kb_per_page
       rescue # This shouldn't fail is there's an error (or proc doesn't exist)
         0
       end
-      
+
       def percent_memory
         (memory / God::System.total_mem.to_f) * 100
       rescue # This shouldn't fail is there's an error (or proc doesn't exist)
@@ -61,7 +61,7 @@ module God
         mem += pg[0][:smaps][:Shared_Clean] || 0
         mem
       end
-      
+
       def group_cpu
         cpu = 0
         processgroup.each do |process|
@@ -79,9 +79,9 @@ module God
           return cpu
         end
       end
-      
+
       private
-      
+
       # Some systems (CentOS?) have a /proc, but they can hang when trying to
       # read from them. Try to use this sparingly as it is expensive.
       def self.readable?(path)
@@ -96,7 +96,7 @@ module God
       def uptime
         File.read(UptimePath).split[0].to_f
       end
-      
+
       def stat(pid = @pid)
         stats = {}
         if File.exist?("/proc/#{pid}/") && File.exist?("/proc/#{pid}/stat")
@@ -125,13 +125,22 @@ module God
         stats = stat
         stats[:smaps] = smaps(@pid) if check_smaps
         processes = [stats]
+
+        parentdict = Hash.new(nil)
         Dir.glob('/proc/[1-9]*') do |process|
           pid = process.match(/(\d+)$/).to_a[1]
           stats = stat(pid)
-          if @pid == stats[:ppid].to_i
-            stats[:smaps] = smaps(pid) if check_smaps
-            processes << stats
-          end
+          ppid = stats[:ppid].to_i
+          parentdict[ppid] = Array.new if parentdict[ppid].nil?
+          parentdict[ppid] << pid.to_i
+        end
+        queue = parentdict[@pid].nil? ? [] : Array.new(parentdict[@pid])
+        while not queue.empty?
+          pid = queue.pop
+          queue.concat parentdict[pid] if not parentdict[pid].nil?
+          stats = stat(pid)
+          stats[:smaps] = smaps(pid) if check_smaps
+          processes << stats
         end
         if check_smaps
           @@processes_fetch = Time.now
